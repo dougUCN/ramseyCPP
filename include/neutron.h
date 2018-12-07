@@ -4,9 +4,11 @@
 #include <vector>
 using namespace std;
 
-const int LIN_ID = 0;
-const int CIRC_ID = 1;
+const double LIN_ID = 0;
+const double CIRC_ID = 1;
 const int NUM_EQ = 4; // Number of equations in derivs
+const double PI  = 3.141592653589793238463;
+const double GAMMA_N = 1.83247172e8; // [s^-1 T^-1] gyromagnetic ratio of neutron
 
 class neutron {
 // vector<double> params should be in the form of {w, w0, wl, phi, INT_ID}
@@ -15,7 +17,8 @@ class neutron {
 // wRF is the strength of either the applied linear and circular RF fields in rad/s
 // INT_ID is either LIN_ID (linear RF) or CIRC_ID (circular RF)
 public:
-    neutron( const vector<double>& ket) {setState(ket);}   // constructor
+    neutron() {_u={1,0,0,0};}        // Default constructor
+    neutron( const vector<double>& ket) {setState(ket);}   // Constructor
     void setState( const vector<double>& ket);
     vector<double> getState();
     void larmorPrecess(double precTime, double w0);   // Analytical larmor precession

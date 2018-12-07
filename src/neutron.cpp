@@ -101,10 +101,10 @@ vector<double> neutron::derivs( const double t, const vector<double>& u, const v
 {
     vector<double> dudt(NUM_EQ);
     double x = params[0] * t + params[3];
-    dudt[0] = 0.5*(params[1]*u[1] + params[2]*cos(x)*u[3]) - params[4]*params[2]/2*u[2]*sin(x);
-    dudt[1] = 0.5*(-params[1]*u[0] - params[2]*cos(x)*u[2]) - params[4]*params[2]/2*u[3]*sin(x);
-    dudt[2] = 0.5*(-params[1]*u[3] + params[2]*cos(x)*u[1]) + params[4]*params[2]/2*u[0]*sin(x);
-    dudt[3] = 0.5*(params[1]*u[2] - params[2]*cos(x)*u[0]) + params[4]*params[2]/2*u[1]*sin(x);
+    dudt[0] = 0.5*(params[1]*u[1] + params[2]*cos(x)*u[3]) - params[4]/2*params[2]*u[2]*sin(x);
+    dudt[1] = 0.5*(-params[1]*u[0] - params[2]*cos(x)*u[2]) - params[4]/2*params[2]*u[3]*sin(x);
+    dudt[2] = 0.5*(-params[1]*u[3] + params[2]*cos(x)*u[1]) + params[4]/2*params[2]*u[0]*sin(x);
+    dudt[3] = 0.5*(params[1]*u[2] - params[2]*cos(x)*u[0]) + params[4]/2*params[2]*u[1]*sin(x);
     return dudt;
 }
 

@@ -7,9 +7,9 @@ cmake_install.cmake
 install_manifest.txt
 
 # ignore everything in out directory
-# except for plotting
-out/
-!*/out/*.py
+# except for plotting python scripts
+out/*
+!/out/*.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

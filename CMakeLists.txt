@@ -3,6 +3,7 @@ project(ramsey)
 
 set(CMAKE_CXX_STANDARD 11)
 set(EXECUTABLE_OUTPUT_PATH out)
+include_directories("include")
 
 find_package(ROOT REQUIRED)
 if (ROOT_FOUND)
@@ -12,7 +13,9 @@ else()
     message(SEND_ERROR "Root not found!")
 endif()
 
-include_directories("include")
+# List of executables
+add_executable( rabi src/rabi.cpp src/neutron.cpp )
+target_link_libraries( rabi ${ROOT_LIBRARIES})
 
-add_executable( circRabi src/circRabi.cpp src/neutron.cpp )
-target_link_libraries( circRabi ${ROOT_LIBRARIES})
+add_executable( ramsey src/ramsey.cpp src/neutron.cpp )
+target_link_libraries( ramsey ${ROOT_LIBRARIES})
