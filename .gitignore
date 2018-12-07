@@ -1,0 +1,24 @@
+# ignore cmake files
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+
+# ignore everything in out directory
+# except for plotting
+out/
+!*/out/*.py
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ignore output files
+*.out
+*.root
+
+# ignore images
+*.png
