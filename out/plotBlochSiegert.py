@@ -9,7 +9,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='Plots output from blochSiegert.cpp')
     parser.add_argument("-f", "--file", type=str, help = "Filename", required=True)
-    parser.add_argument("-rf", "--ramseyFringe", type=int, help = "Input rf___ branch to draw")
+    parser.add_argument("-rf", "--ramseyFringe", type=int, help = "rf___ branch to draw")
     args = parser.parse_args()
 
     filename = args.file
@@ -36,7 +36,6 @@ def main():
             ax2.set(ylabel='P(z)')
             ax2.plot(wRange, fringe)
             ax2.grid(True)
-            ax2.legend()
 
         except:
             print("Could not read branch ",branchname)
@@ -55,7 +54,7 @@ def main():
     ax1.plot(phi, params[0]-polyMin, label="Polynomial fit")
     ax1.plot(phi, params[0]-gridMin, label="Gridsearch")
     ax1.grid(True)
-    ax1.set(title ='Bloch Siergert shift for optimized linear Ramsey Fringes')
+    ax1.set(title ='Bloch Siergert shift for optimized Ramsey Fringes')
     ax1.set(xlabel ='Initial phase angle [rad]')
     ax1.set(ylabel ='Shift [rad/s]')
     ax1.legend()

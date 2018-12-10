@@ -5,23 +5,29 @@ Solves the equations of motion of a neutron spin in a magnetic field (Schrodinge
 Calculates bloch siegert shift  
 
 Change parameters in the body of the code in /src/, or write your own routines  
-using the functions in neutron.h and neutron.cpp
+using the functions in neutron.hpp and neutron.cpp
 
 Code
 -------------
 ### Sample Code
-Executables found in /out/  
-rabi -- Applies a rabi pulse with a circular and linear RF to a neutron
-ramsey -- Creates a ramsey fringe with circular or linear RF 
+Executables will be found in /out/  
+rabi -- Applies a rabi pulse with a circular and linear RF to a neutron  
+ramsey -- Creates a ramsey fringe with circular or linear RF  
 
 ### Plotting
 Code outputs root trees, but since I despise root, I use python for all my plotting  
-plotRabi -- Plots the output from either circRabi or linRabi  
+plotRabi -- Plots a single rabi pulse
+plotRamsey -- Plots a ramsey fringe
 
 Prerequisites
 --------------
-Requirements: cmake, [ROOT](https://github.com/root-project/root) (only tested on v6.15)  
-For pretty plots: Python, [root_numpy](http://scikit-hep.org/root_numpy/)  
+Requirements: cmake, [ROOT](https://github.com/root-project/root) (only tested on v6.15), BOOST (only tested 1.58.0)
+For pretty plots: Python, [root_numpy](http://scikit-hep.org/root_numpy/)
+
+### Boost
+The [Boost C++ libraries](https://www.boost.org/) are used for some fitting.  
+Boost is included in most Linux OSs; should you need to download and compile it manually,  
+you may have to adjust the search path of cmake by calling cmake with `-DBOOST_ROOT=/path/to/boost`.  
 
 Compiling
 -----------

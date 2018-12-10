@@ -1,12 +1,15 @@
 // Sample program that does a circular
 // rabi pi pulse, compares to analytical solution
-//
 // Also does a linear rabi pi pulse
+//
+// Outputs: circRabi.root, linRabi.root
+// Each root file contains branches time, xProb, yProb, zProb,
+// and a vector params that holds {W_VAL, W0_VAL, WC_VAL, PHI_VAL, CIRC_ID}
 
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include "neutron.h"
+#include "neutron.hpp"
 #include "TTree.h"
 #include "TFile.h"
 
@@ -16,7 +19,7 @@ using namespace std;
 const double W_VAL = 20;   //[rad s^-1]
 const double W0_VAL = 20;  //[rad s^-1]    B0 field strength
 const double WC_VAL = PI/2; //[rad s^-1]   Circ RF strength
-const double WL_VAL = PI; //[rad s^-1] Lin RF strenght
+const double WL_VAL = PI; //[rad s^-1] Lin RF strength
 const double PHI_VAL = 0; //[rad]          RF pulse inital phase
 
 // Initial "orientation" of neutron spin

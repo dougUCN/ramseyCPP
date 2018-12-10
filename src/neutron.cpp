@@ -1,7 +1,7 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-#include "neutron.h"
+#include "neutron.hpp"
 
 using namespace std;
 
