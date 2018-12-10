@@ -16,19 +16,17 @@ def main():
     try:
         w = root2array(filename,branches="freq")[0]
         z = root2array(filename,branches="zProb")[0]
+        params = root2array(filename,branches="params")[0]
     except:
         sys.exit()
 
-    try:
-        params = root2array(filename,branches="params")[0]
-        if(params[4] == 1):
-            print("Circular RF Ramsey fringe")
-        else:
-            print("Linear RF Ramsey fringe")
-        print("{W0_VAL, WL_VAL, PHI_VAL}")
-        print(params[1],"  ",params[2],"  ",params[3])
-    except:
-        print("Unable to read branch 'params'")
+    if(params[4] == 1):
+        print("Circular RF Ramsey fringe")
+    else:
+        print("Linear RF Ramsey fringe")
+    print("{W0_VAL, WL_VAL, PHI_VAL}")
+    print(params[1],"  ",params[2],"  ",params[3])
+
 
     plt.plot(w, z)
     plt.grid(True)
