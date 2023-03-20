@@ -27,8 +27,7 @@ using namespace std;
 
 const double PHASE_INIT = 0;       // Initial phase angle to scan
 const double PHASE_FINAL = 2 * PI; // Final Phase angle to scane
-// const double PHASE_STEP = 0.1;     // [rad]
-const double PHASE_STEP = 0.5; // [rad]
+const double PHASE_STEP = 0.1;     // [rad]
 
 // Ramsey Fringe parameters
 const double PRECESS_TIME = 180;  // Seconds
@@ -130,8 +129,9 @@ int main()
         branchname = "rf" + to_string(counterPhi) + ".txt";
         outfile.open(branchname);
         outfile.precision(PRECISION);
-        outfile << "#w,zProb\n";
-        for (int i = 0; i < phaseRange.size(); i++)
+        outfile << "#phi=" << phi << "\n"
+                << "#w,zProb\n";
+        for (int i = 0; i < wRange.size(); i++)
         {
             outfile << wRange[i] << "," << fringe[i] << "\n";
         }

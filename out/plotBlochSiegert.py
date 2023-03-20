@@ -1,65 +1,89 @@
 #!/usr/bin/env python
+import pandas as pd
+import re
+import argparse
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def main():
-    import pandas as pd
-    import sys
-    import argparse
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     parser = argparse.ArgumentParser(description="Plots output from blochSiegert.cpp")
     parser.add_argument("-f", "--file", type=str, help="Filename", required=True)
-    parser.add_argument("-rf", "--ramseyFringe", type=int, help="rf___ branch to draw")
+    parser.add_argument(
+        "-rf", "--ramseyFringe", type=str, nargs="+", help="rf__.txt file(s) to draw"
+    )
     args = parser.parse_args()
 
-    filename = args.file
-    print("Loading...", filename)
+    print(f"Loading {args.file}")
+    df = pd.read_csv(
+        args.file, comment="#", header=0, names=["phi", "gridSearchMin", "polyFitMin"]
+    )
+    bloch_siegert_params = parse_params(args.file)
+    print(bloch_siegert_params)
+    # print("{W0_VAL, PRECESS_TIME, PULSE_TIME}")
+    # print(params[0], "  ", params[1], "  ", params[2])
 
-    try:
-        phi = np.array(root2array(filename, branches="phi")[0])
-        gridMin = np.array(root2array(filename, branches="gridMin")[0])
-        polyMin = np.array(root2array(filename, branches="polyMin")[0])
-        params = np.array(root2array(filename, branches="params")[0])
-    except:
-        sys.exit()
+    plt.figure()
+    plt.plot(
+        df["phi"].to_numpy(),
+        bloch_siegert_params["W0_VAL"] - df["polyFitMin"].to_numpy(),
+        label="Polynomial fit",
+    )
+    plt.plot(
+        df["phi"].to_numpy(),
+        bloch_siegert_params["W0_VAL"] - df["gridSearchMin"].to_numpy(),
+        label="Grid search",
+    )
+    plt.grid(True)
+    plt.xlabel(r"$\phi$ [rad]")
+    plt.ylabel(r"$\Delta$Bloch-Siegert [rad/s]")
+    plt.legend()
 
-    if args.ramseyFringe != None:
-        try:
-            branchname = "rf" + str(args.ramseyFringe)
-            fringe = np.array(root2array(filename, branches=branchname)[0])
-            wRange = np.array(root2array(filename, branches="wRange")[0])
+    if args.ramseyFringe:
+        fringe = {}
+        for fringe_file in args.ramseyFringe:
+            print(f"Loading {fringe_file}")
+            phi = parse_params(fringe_file)["phi"]
+            fringe[phi] = pd.read_csv(
+                fringe_file, comment="#", header=0, names=["w", "zProb"]
+            )
 
-            fig2 = plt.figure(branchname)
-            ax2 = fig2.add_subplot(111)
-            ax2.set(title=branchname)
-            ax2.set(xlabel="w [rad/s]")
-            ax2.set(ylabel="P(z)")
-            ax2.plot(wRange, fringe)
-            ax2.grid(True)
+            plt.figure()
+            plt.title(rf"$\phi$={phi} [rad]")
+            plt.xlabel(r"$\omega$ [rad/s]")
+            plt.ylabel("P(z)")
+            plt.plot(fringe[phi]["w"].to_numpy(), fringe[phi]["zProb"].to_numpy())
+            plt.axvline(
+                df.query("phi == @phi")["polyFitMin"].tolist()[0],
+                label="polyFitMin",
+                color="C1",
+            )
+            plt.axvline(
+                df.query("phi == @phi")["gridSearchMin"].tolist()[0],
+                label="gridSearchMin",
+                color="C2",
+            )
+            plt.grid(True)
+            plt.legend()
 
-        except:
-            print("Could not read branch ", branchname)
-
-    if params[3] == 1:
-        print("Circular RF Ramsey fringe")
-    else:
-        print("Linear RF Ramsey fringe")
-    print("{W0_VAL, PRECESS_TIME, PULSE_TIME}")
-    print(params[0], "  ", params[1], "  ", params[2])
-
-    fig1 = plt.figure("blochSiegertShift")
-    ax1 = fig1.add_subplot(111)
-
-    ax1.plot(phi, params[0] - polyMin, label="Polynomial fit")
-    ax1.plot(phi, params[0] - gridMin, label="Gridsearch")
-    ax1.grid(True)
-    ax1.set(title="Bloch Siergert shift for optimized Ramsey Fringes")
-    ax1.set(xlabel="Initial phase angle [rad]")
-    ax1.set(ylabel="Shift [rad/s]")
-    ax1.legend()
     plt.show()
     return
+
+
+def parse_params(filename):
+    params = {}
+    with open(filename, "r") as infile:
+        param_line = re.sub(r"\s+", "", infile.readline()[1:]).split(",")
+        # regex deletes all whitespace. First character is assumed to be '#'.
+        # Splitting parameters along the comma should gives the pair PARAM=VALUE
+
+        for pair in param_line:
+            split = pair.split("=")
+            if len(split) != 2:
+                raise (f"Could not parse string '{pair}'")
+            params[split[0]] = float(split[1])
+
+    return params
 
 
 if __name__ == "__main__":

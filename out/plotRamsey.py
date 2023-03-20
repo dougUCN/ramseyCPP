@@ -10,10 +10,9 @@ def main():
     parser.add_argument("-f", "--file", type=str, help="Filename", required=True)
     args = parser.parse_args()
 
-    print(f"Loading...{args.file}")
+    print(f"Loading {args.file}")
 
     df = pd.read_csv(args.file, comment="#", header=0, names=["w", "zProb"])
-
     print(parse_params(args.file))
 
     plt.plot(df["w"].to_numpy(), df["zProb"].to_numpy())
