@@ -70,8 +70,8 @@ int main()
         cout << "Saving spin tracking to " << outnames[i] << "...";
         outfile.open(outnames[i]);
         outfile << "#W_VAL=" << W_VAL << ",W0_VAL=" << W0_VAL
-                << ",WC_VAL=" << WC_VAL << ",WL_VAL=" << WL_VAL 
-                << ",PHI_VAL" << PHI_VAL << "\n";
+                << ",WC_VAL=" << WC_VAL << ",WL_VAL=" << WL_VAL
+                << ",PHI_VAL=" << PHI_VAL << "\n";
         outfile.precision(PRECISION);
         outfile << "#time,xProb,yProb,zProb\n";
         for (int j = 0; j < t[i].size(); j++)

@@ -1,11 +1,13 @@
 #!/usr/bin/env python
+import pandas as pd
+import re
+import argparse
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 
 def main():
-    import pandas as pd
-    import sys
-    import argparse
-
     parser = argparse.ArgumentParser(description="Plots output from rabi.cpp")
     parser.add_argument("-f", "--file", type=str, help="Filename", required=True)
     args = parser.parse_args()
@@ -13,42 +15,21 @@ def main():
     filename = args.file
     print("Loading...", filename)
 
-    try:
-        time = root2array(filename, branches="time")[0]
-        x = root2array(filename, branches="xProb")[0]
-        y = root2array(filename, branches="yProb")[0]
-        z = root2array(filename, branches="zProb")[0]
-        params = root2array(filename, branches="params")[0]
-    except:
-        sys.exit()
+    df = pd.read_csv(
+        args.file, comment="#", header=0, names=["time", "xProb", "yProb", "zProb"]
+    )
 
-    if params[4] == 1:
-        print("Circular RF Rabi pulse")
-    else:
-        print("Linear RF Rabi pulse")
-    print("{W_VAL, W0_VAL, WL_VAL, PHI_VAL}")
-    print(params[0], "  ", params[1], "  ", params[2], "  ", params[3])
-
-    plotStuff(x, y, z, time)
-    return
-
-
-def plotStuff(xProb, yProb, zProb, time):
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
+    print(parse_params(args.file))
 
     plt.figure(1)
-    plt.plot(time, zProb)
-    plt.title("Odds of measuring spin up along z")
+    plt.plot(df["time"].to_numpy(), df["zProb"].to_numpy())
     plt.xlabel("time [s]")
     plt.ylabel("P(z)")
-    plt.axis([0, 2 * np.pi, 0, 1])
+    plt.ylim([0, 1])
 
     fig2 = plt.figure(2)
     ax = fig2.add_subplot(111, projection="3d")
-    plt.title("Odds of measuring spin up along x, y, z")
-    ax.scatter(xProb, yProb, zProb)
+    ax.plot(df["xProb"].to_numpy(), df["yProb"].to_numpy(), df["zProb"].to_numpy())
     ax.set_xlim3d(0, 1)
     ax.set_ylim3d(0, 1)
     ax.set_zlim3d(0, 1)
@@ -58,22 +39,36 @@ def plotStuff(xProb, yProb, zProb, time):
     ax.view_init(30, 220)  # So that the viewing angle looks ok
 
     plt.figure(3)
-    plt.plot(time, xProb)
-    plt.title("Odds of measuring spin up along x")
+    plt.plot(df["time"].to_numpy(), df["zProb"].to_numpy())
     plt.xlabel("time [s]")
     plt.ylabel("P(x)")
-    plt.axis([0, 2 * np.pi, 0, 1])
+    plt.ylim([0, 1])
 
     plt.figure(4)
-    plt.plot(time, yProb)
-    plt.title("Odds of measuring spin up along y")
+    plt.plot(df["time"].to_numpy(), df["yProb"].to_numpy())
     plt.xlabel("time [s]")
     plt.ylabel("P(y)")
-    plt.axis([0, 2 * np.pi, 0, 1])
+    plt.ylim([0, 1])
 
     plt.show()
 
     return
+
+
+def parse_params(filename):
+    params = {}
+    with open(filename, "r") as infile:
+        param_line = re.sub(r"\s+", "", infile.readline()[1:]).split(",")
+        # regex deletes all whitespace. First character is assumed to be '#'.
+        # Splitting parameters along the comma should gives the pair PARAM=VALUE
+
+        for pair in param_line:
+            split = pair.split("=")
+            if len(split) != 2:
+                raise (f"Could not parse string '{pair}'")
+            params[split[0]] = float(split[1])
+
+    return params
 
 
 if __name__ == "__main__":
