@@ -93,7 +93,7 @@ vector<double> neutron::derivs( const double t, const vector<double>& u, const v
 // w is the driving RF frequency in rad/s
 // w0 is the strength of the applied B0 field in rad/s
 // wRF is the strength of the linear/circular RF field in rad/s
-// INT_ID is either LIN_ID (linear RF) or CIRC_ID (circular RF)
+// INT_ID is either USE_LINEAR_RF (linear RF) or USE_CIRCULAR_RF (circular RF)
 //
 // Modified right hand side of eq A.1 - A.4 in Daniel May's nEDM thesis
 // using eq 3.28, 3.29 as a basis
