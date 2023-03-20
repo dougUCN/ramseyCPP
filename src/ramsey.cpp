@@ -94,7 +94,7 @@ int main()
     outfile << "#W0_VAL=" << W0_VAL << ",WL_VAL=" << WL_VAL
             << ",PHI_VAL=" << PHI_VAL << ",INT_ID=" << INT_ID << "\n";
     outfile.precision(PRECISION);
-    outfile << "w,zProb\n";
+    outfile << "#w,zProb\n";
 
     for (int i = 0; i < wOut.size(); i++)
     {

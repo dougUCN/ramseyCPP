@@ -14,9 +14,7 @@ def main():
 
     print(f"Loading {args.file}")
 
-    df = pd.read_csv(
-        args.file, comment="#", header=0, names=["time", "xProb", "yProb", "zProb"]
-    )
+    df = pd.read_csv(args.file, comment="#", names=["time", "xProb", "yProb", "zProb"])
 
     print(parse_params(args.file))
 

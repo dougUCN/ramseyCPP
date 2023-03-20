@@ -27,7 +27,8 @@ using namespace std;
 
 const double PHASE_INIT = 0;       // Initial phase angle to scan
 const double PHASE_FINAL = 2 * PI; // Final Phase angle to scane
-const double PHASE_STEP = 0.1;     // [rad]
+// const double PHASE_STEP = 0.1;     // [rad]
+const double PHASE_STEP = 0.5; // [rad]
 
 // Ramsey Fringe parameters
 const double PRECESS_TIME = 180;  // Seconds
@@ -58,6 +59,7 @@ int main()
     // Vvectors of parameters to scan, calculate optimal ramsey pulse time
     wl = PI / PULSE_TIME;
     double temp = PHASE_INIT;
+    phaseRange.push_back(temp);
     for (int i = 0; temp <= PHASE_FINAL; i++)
     {
         temp += PHASE_STEP;

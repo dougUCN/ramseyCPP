@@ -12,7 +12,7 @@ def main():
 
     print(f"Loading {args.file}")
 
-    df = pd.read_csv(args.file, comment="#", header=0, names=["w", "zProb"])
+    df = pd.read_csv(args.file, comment="#", names=["w", "zProb"])
     print(parse_params(args.file))
 
     plt.plot(df["w"].to_numpy(), df["zProb"].to_numpy())

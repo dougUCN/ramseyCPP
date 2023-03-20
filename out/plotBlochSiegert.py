@@ -16,8 +16,9 @@ def main():
 
     print(f"Loading {args.file}")
     df = pd.read_csv(
-        args.file, comment="#", header=0, names=["phi", "gridSearchMin", "polyFitMin"]
+        args.file, comment="#", names=["phi", "gridSearchMin", "polyFitMin"]
     )
+    print(df)
     bloch_siegert_params = parse_params(args.file)
     print(bloch_siegert_params)
     # print("{W0_VAL, PRECESS_TIME, PULSE_TIME}")
