@@ -1,39 +1,43 @@
 #!/usr/bin/env python
+import pandas as pd
+import argparse
+import matplotlib.pyplot as plt
+import re
 
 
 def main():
-    import pandas as pd
-    import sys
-    import argparse
-    import matplotlib.pyplot as plt
-
     parser = argparse.ArgumentParser(description="Plots ramsey fringe from root tree")
     parser.add_argument("-f", "--file", type=str, help="Filename", required=True)
     args = parser.parse_args()
 
-    filename = args.file
-    print("Loading...", filename)
+    print(f"Loading...{args.file}")
 
-    try:
-        w = root2array(filename, branches="freq")[0]
-        z = root2array(filename, branches="zProb")[0]
-        params = root2array(filename, branches="params")[0]
-    except:
-        sys.exit()
+    df = pd.read_csv(args.file, comment="#", header=0, names=["w", "zProb"])
 
-    if params[4] == 1:
-        print("Circular RF Ramsey fringe")
-    else:
-        print("Linear RF Ramsey fringe")
-    print("{W0_VAL, WL_VAL, PHI_VAL}")
-    print(params[1], "  ", params[2], "  ", params[3])
+    print(parse_params(args.file))
 
-    plt.plot(w, z)
+    plt.plot(df["w"].to_numpy(), df["zProb"].to_numpy())
     plt.grid(True)
-    plt.xlabel("w [rad/s]")
+    plt.xlabel(r"$\omega$ [rad/s]")
     plt.ylabel("P(z)")
     plt.show()
     return
+
+
+def parse_params(filename):
+    params = {}
+    with open(filename, "r") as infile:
+        param_line = re.sub(r"\s+", "", infile.readline()[1:]).split(",")
+        # regex deletes all whitespace. First character is assumed to be '#'.
+        # Splitting parameters along the comma should gives the pair PARAM=VALUE
+
+        for pair in param_line:
+            split = pair.split("=")
+            if len(split) != 2:
+                raise (f"Could not parse string '{pair}'")
+            params[split[0]] = float(split[1])
+
+    return params
 
 
 if __name__ == "__main__":

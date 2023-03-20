@@ -12,8 +12,7 @@ def main():
     parser.add_argument("-f", "--file", type=str, help="Filename", required=True)
     args = parser.parse_args()
 
-    filename = args.file
-    print("Loading...", filename)
+    print(f"Loading...{args.file}")
 
     df = pd.read_csv(
         args.file, comment="#", header=0, names=["time", "xProb", "yProb", "zProb"]
