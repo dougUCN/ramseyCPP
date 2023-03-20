@@ -7,15 +7,16 @@
 // Fits a quadratic polynomial to the bottom of the fringe. The central peak of
 // ramsey fringe has width 1/T, where T = precession period
 //
-// Outputs: blochSiegert.root, with branches phi (rad), wRange (ramsey fringe freqs)
+// Outputs: blochSiegert.txt, with columns phi (rad), wRange (ramsey fringe freqs)
 //          gridMin(minimums on ramsey fringe from grid search),
 //          polyMin (minimums on ramsey fringe from fitting curve to polynomial),
-//          and params {W0_VAL, PRECESS_TIME, PULSE_TIME, INT_ID}
+//          Header has params {W0_VAL, PRECESS_TIME, PULSE_TIME, INT_ID}
 //
-//          blochSiegert.root also contains every ramsey fringe made, numbered
+//          Separately outputs every ramsey fringe made, numbered
 //          rf1, rf2.... etc
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <vector>
 #include <string>
@@ -26,7 +27,8 @@ using namespace std;
 
 const double PHASE_INIT = 0;       // Initial phase angle to scan
 const double PHASE_FINAL = 2 * PI; // Final Phase angle to scane
-const double PHASE_STEP = 0.1;     // [rad]
+// const double PHASE_STEP = 0.1;     // [rad]
+const double PHASE_STEP = 0.5; // [rad]
 
 // Ramsey Fringe parameters
 const double PRECESS_TIME = 180;  // Seconds
@@ -40,6 +42,9 @@ const double INT_ID = USE_LINEAR_RF; // Type of RF pulse (USE_CIRCULAR_RF or USE
 const double RK_STEP = 0.001;        // [seconds] For Runge Kutta integrator
                                      // PULSE_TIME cannot have more sig figs than RK_STEP!
 
+// Output precision to stdout and file
+const int PRECISION = 12;
+
 int main()
 {
     vector<double> fringe, phaseRange, wRange, polyCoeff;
@@ -47,6 +52,7 @@ int main()
     vector<double> gridSearchMin, polyFitMin;
     vector<double>::iterator min;
     string filename, branchname;
+    ofstream outfile;
     neutron ucn;
     double phiVal2, wl;
 
@@ -71,11 +77,11 @@ int main()
     // For file output
     if (INT_ID == USE_LINEAR_RF)
     {
-        filename = "linBlochSiegert.root";
+        filename = "linBlochSiegert.txt";
     }
     else
     {
-        filename = "circBlochSiegert.root";
+        filename = "circBlochSiegert.txt";
         wl = (2 * PI) / PULSE_TIME;
     }
 
@@ -120,8 +126,16 @@ int main()
         polyCoeff = polyfit(wRangeAdj, fringe, 2);
         polyFitMin.push_back(-polyCoeff[1] / (2 * polyCoeff[2]) + W0_VAL);
 
-        // Save output to tree
-        branchname = "rf" + to_string(counterPhi);
+        // Save output to file
+        branchname = "rf" + to_string(counterPhi) + ".txt";
+        outfile.open(branchname);
+        outfile.precision(PRECISION);
+        outfile << "#w,zProb\n";
+        for (int i = 0; i < phaseRange.size(); i++)
+        {
+            outfile << wRange[i] << "," << fringe[i] << "\n";
+        }
+        outfile.close();
 
         cout << "100%" << endl;
 
@@ -134,6 +148,19 @@ int main()
     }
 
     cout << "\nSaving output to " << filename << "...";
+
+    outfile.open(filename);
+    outfile << "#W0_VAL=" << W0_VAL << ",PRECESS_TIME=" << PRECESS_TIME
+            << ",PULSE_TIME=" << PULSE_TIME << ",INT_ID=" << INT_ID << "\n";
+    outfile.precision(PRECISION);
+    outfile << "#phi,gridMin,polyMin\n";
+
+    for (int i = 0; i < phaseRange.size(); i++)
+    {
+        outfile << phaseRange[i] << "," << gridSearchMin[i] << ','
+                << polyFitMin[i] << "\n";
+    }
+    outfile.close();
 
     cout << "Done!\n";
 

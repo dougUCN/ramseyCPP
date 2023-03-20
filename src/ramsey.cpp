@@ -1,7 +1,7 @@
 // Sample program that creates a ramsey fringe, either circular or linear
 //
 // Output: either linRamsey.txt or circRamsey.txt, depending on INT_ID choice
-// The text file will contain columns freq, zProb, and params 
+// The text file will contain columns freq, zProb, and params
 // {W0_VAL, WL_VAL, PHI_VAL, INT_ID}
 
 #include <iostream>
@@ -89,9 +89,9 @@ int main()
 
     cout << "...100%" << endl
          << "Saving output to " << filename << "...";
-    
+
     outfile.open(filename);
-    outfile << "#W0_VAL=" << W0_VAL << ",WL_VAL=" << WL_VAL 
+    outfile << "#W0_VAL=" << W0_VAL << ",WL_VAL=" << WL_VAL
             << ",PHI_VAL=" << PHI_VAL << ",INT_ID=" << INT_ID << "\n";
     outfile.precision(PRECISION);
     outfile << "w,zProb\n";
@@ -100,6 +100,7 @@ int main()
     {
         outfile << wOut[i] << "," << zOut[i] << "\n";
     }
+    outfile.close();
 
     cout << "Done!\n";
 
