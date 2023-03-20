@@ -22,3 +22,6 @@ __pycache__/
 
 # ignore images
 *.png
+
+# vscode
+.vscode/
