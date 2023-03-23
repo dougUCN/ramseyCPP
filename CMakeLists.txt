@@ -23,3 +23,6 @@ target_link_libraries( ramsey ${Boost_LIBRARIES})
 
 add_executable( blochSiegert src/blochSiegert.cpp src/neutron.cpp )
 target_link_libraries( blochSiegert ${Boost_LIBRARIES})
+
+add_executable( blochSiegert_rabi src/blochSiegert_rabi.cpp src/neutron.cpp )
+target_link_libraries( blochSiegert_rabi ${Boost_LIBRARIES})
