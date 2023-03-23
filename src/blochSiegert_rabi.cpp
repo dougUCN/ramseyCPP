@@ -24,9 +24,10 @@
 
 using namespace std;
 
-const double TIME_INIT = 1;  // Initial phase angle to scan
-const double TIME_FINAL = 6; // Final Phase angle to scane
-const double TIME_STEP = 0.05;   // [rad]
+const double TIME_INIT = 0.5;    // Initial phase angle to scan
+const double TIME_FINAL = 7;     // Final Phase angle to scane
+const double TIME_STEP = 0.005; // [rad] 
+// WARNING!! PULSE_TIME cannot have more sig figs than RK_STEP!
 
 // Ramsey Fringe parameters
 const double W_STEP = 5e-7;       //[rad s^-1]    Step width of search around w0
@@ -37,7 +38,6 @@ const double PHI_INIT = 0;        //[rad] Initial phase angle of RF
 // Integration parameters
 const double INT_ID = USE_LINEAR_RF; // Type of RF pulse (USE_CIRCULAR_RF or USE_LINEAR_RF)
 const double RK_STEP = 0.001;        // [seconds] For Runge Kutta integrator
-                                     // PULSE_TIME cannot have more sig figs than RK_STEP!
 
 // Output precision to stdout and file
 const int PRECISION = 12;

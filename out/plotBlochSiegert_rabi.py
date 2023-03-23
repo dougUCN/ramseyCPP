@@ -22,21 +22,30 @@ def main():
     bloch_siegert_params = parse_params(args.file)
     print(bloch_siegert_params)
 
+    # Bloch prediction
+    bloch_x = np.linspace(df["pulseWidth"].min(), df["pulseWidth"].max(), 300)
+    bloch_y = (2 * np.pi / bloch_x) ** 2 / (16 * bloch_siegert_params["W0_VAL"])
+
     plt.figure()
     plt.plot(
         df["pulseWidth"].to_numpy(),
         bloch_siegert_params["W0_VAL"] - df["polyFitMin"].to_numpy(),
-        label="Polynomial fit",
+        # label="Polynomial fit",
         color="#005F73",
+        marker=".",
+        linestyle="None",
+        markersize=3,
     )
-    plt.plot(
-        df["pulseWidth"].to_numpy(),
-        bloch_siegert_params["W0_VAL"] - df["gridSearchMin"].to_numpy(),
-        label="Grid search",
-    )
+    plt.plot(bloch_x, bloch_y, color="#CA6702")
+    plt.plot(bloch_x, (-1) * bloch_y, color="#CA6702")
+    # plt.plot(
+    #     df["pulseWidth"].to_numpy(),
+    #     bloch_siegert_params["W0_VAL"] - df["gridSearchMin"].to_numpy(),
+    #     label="Grid search",
+    # )
     plt.grid(True)
     plt.xlabel(r"$\pi$ pulse width [s]")
-    plt.ylabel(r"$\Delta$ Bloch-Sigert [rad/s]")
+    plt.ylabel(r"$\Delta$ Bloch-Siegert [rad/s]")
     plt.ticklabel_format(axis="y", useMathText=True)
     plt.legend()
 
@@ -88,53 +97,6 @@ def parse_params(filename):
             params[split[0]] = float(split[1])
 
     return params
-
-
-# https://stackoverflow.com/questions/40642061/how-to-set-axis-ticks-in-multiples-of-pi-python-matplotlib
-def multiple_formatter(denominator=2, number=np.pi, latex="\pi"):
-    def gcd(a, b):
-        while b:
-            a, b = b, a % b
-        return a
-
-    def _multiple_formatter(x, pos):
-        den = denominator
-        num = np.int(np.rint(den * x / number))
-        com = gcd(num, den)
-        (num, den) = (int(num / com), int(den / com))
-        if den == 1:
-            if num == 0:
-                return r"$0$"
-            if num == 1:
-                return r"$%s$" % latex
-            elif num == -1:
-                return r"$-%s$" % latex
-            else:
-                return r"$%s%s$" % (num, latex)
-        else:
-            if num == 1:
-                return r"$\frac{%s}{%s}$" % (latex, den)
-            elif num == -1:
-                return r"$\frac{-%s}{%s}$" % (latex, den)
-            else:
-                return r"$\frac{%s%s}{%s}$" % (num, latex, den)
-
-    return _multiple_formatter
-
-
-class Multiple:
-    def __init__(self, denominator=2, number=np.pi, latex="\pi"):
-        self.denominator = denominator
-        self.number = number
-        self.latex = latex
-
-    def locator(self):
-        return plt.MultipleLocator(self.number / self.denominator)
-
-    def formatter(self):
-        return plt.FuncFormatter(
-            multiple_formatter(self.denominator, self.number, self.latex)
-        )
 
 
 if __name__ == "__main__":
